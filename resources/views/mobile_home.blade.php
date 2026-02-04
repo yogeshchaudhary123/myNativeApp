@@ -316,9 +316,12 @@
 
     <div class="container">
         <header>
-            <div class="user-info">
-                <p>Good Morning,</p>
-                <h1>User 👋</h1>
+            <div class="flex items-center gap-4">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-12 h-12 object-contain">
+                <div class="user-info">
+                    <p>Good Morning,</p>
+                    <h1>User 👋</h1>
+                </div>
             </div>
             <div class="profile-pic">U</div>
         </header>
