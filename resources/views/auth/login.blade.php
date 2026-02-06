@@ -5,37 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - NativeApp</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        :root {
-            --bg-color: #0d0f14;
-            --accent-primary: #7c3aed;
-            --accent-secondary: #ec4899;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-        }
-
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            background-image:
-                radial-gradient(circle at 0% 0%, rgba(124, 58, 237, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 100% 100%, rgba(236, 72, 153, 0.1) 0%, transparent 40%);
-        }
-
-        .glass {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-    </style>
+    @vite('resources/css/auth.css')
 </head>
 
 <body class="min-h-screen flex items-center justify-center p-6">
@@ -46,12 +16,20 @@
             <h1 class="text-3xl font-bold tracking-tight">Welcome Back</h1>
             <p class="text-[var(--text-muted)] mt-2">Sign in to continue to NativeApp</p>
         </div>
+          @error('main_error')
+          <p class="text-red-500 text-xs mt-1 ml-1">{{ $message }}</p>
+          @enderror
+        <form action="{{ route('login') }}" method="POST" class="space-y-6">
+            @csrf
 
-        <form action="#" class="space-y-6">
             <div class="space-y-2">
                 <label for="email" class="text-sm font-medium text-[var(--text-muted)] ml-1">Email Address</label>
-                <input type="email" id="email" placeholder="name@example.com"
-                    class="w-full h-14 glass rounded-2xl px-5 focus:outline-none focus:border-[var(--accent-primary)] transition-all placeholder:text-gray-600">
+                <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="name@example.com"
+                    class="w-full h-14 glass rounded-2xl px-5 focus:outline-none focus:border-[var(--accent-primary)] transition-all placeholder:text-gray-600 @error('email') border-red-500 @enderror"
+                    required>
+                @error('email')
+                    <p class="text-red-500 text-xs mt-1 ml-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="space-y-2">
@@ -60,11 +38,21 @@
                     <a href="/forgot-password"
                         class="text-sm font-medium text-[var(--accent-primary)] hover:opacity-80">Forgot?</a>
                 </div>
-                <input type="password" id="password" placeholder="••••••••"
-                    class="w-full h-14 glass rounded-2xl px-5 focus:outline-none focus:border-[var(--accent-primary)] transition-all placeholder:text-gray-600">
+                <input type="password" id="password" name="password" placeholder="••••••••"
+                    class="w-full h-14 glass rounded-2xl px-5 focus:outline-none focus:border-[var(--accent-primary)] transition-all placeholder:text-gray-600 @error('password') border-red-500 @enderror"
+                    required>
+                @error('password')
+                    <p class="text-red-500 text-xs mt-1 ml-1">{{ $message }}</p>
+                @enderror
             </div>
 
-            <button type="button"
+            <div class="flex items-center ml-1">
+                <input type="checkbox" name="remember" id="remember"
+                    class="w-4 h-4 rounded border-gray-300 text-[var(--accent-primary)] focus:ring-[var(--accent-primary)]">
+                <label for="remember" class="ml-2 text-sm text-[var(--text-muted)]">Remember me</label>
+            </div>
+
+            <button type="submit"
                 class="w-full h-14 bg-gradient-to-r from-[#7c3aed] to-[#4f46e5] rounded-2xl font-semibold text-white shadow-lg shadow-purple-500/30 hover:scale-[0.98] active:scale-95 transition-transform mt-4">
                 Sign In
             </button>
@@ -78,19 +66,6 @@
         </p>
     </div>
 
-    <style>
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-    </style>
 </body>
 
 </html>

@@ -309,6 +309,31 @@
                 transform: translateY(0);
             }
         }
+
+        /* Utility classes */
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+
+        .w-12 {
+            width: 3rem;
+        }
+
+        .h-12 {
+            height: 3rem;
+        }
+
+        .object-contain {
+            object-fit: contain;
+        }
     </style>
 </head>
 
@@ -320,10 +345,16 @@
                 <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-12 h-12 object-contain">
                 <div class="user-info">
                     <p>Good Morning,</p>
-                    <h1>User 👋</h1>
+                    <h1>{{ session('user')['name'] ?? 'User' }} 👋</h1>
                 </div>
             </div>
-            <div class="profile-pic">U</div>
+            <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                @csrf
+                <button type="submit" class="profile-pic"
+                    style="cursor: pointer; border: none; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));">
+                    {{ strtoupper(substr(session('user')['name'] ?? 'U', 0, 1)) }}
+                </button>
+            </form>
         </header>
 
         <div class="banner">
