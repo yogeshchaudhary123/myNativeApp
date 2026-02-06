@@ -19,10 +19,8 @@
             <h1 class="text-3xl font-bold tracking-tight">Create Account</h1>
             <p class="text-[var(--text-muted)] mt-2">Join NativeApp today and start building</p>
         </div>
-        @error('main_error')
-            <p class="text-red-500 text-xs mt-1 ml-1">{{ $message }}</p>
-        @enderror
-        <form action="{{ route('register') }}" method="POST" class="space-y-6">
+        <div id="error-container"></div>
+        <form id="register-form" class="space-y-6">
             @csrf
 
             <div class="space-y-2">
@@ -76,6 +74,68 @@
         </p>
     </div>
 
+    <script>
+        document.getElementById('register-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const passwordConfirmation = document.getElementById('password_confirmation').value;
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const errorContainer = document.getElementById('error-container');
+
+            // Disable submit button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Registering...';
+            errorContainer.innerHTML = '';
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        password: password,
+                        password_confirmation: passwordConfirmation
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Success - redirect to home
+                    window.location.href = '/';
+                } else {
+                    // Show validation errors
+                    let errorHtml = '<div class="bg-red-500/10 border border-red-500 rounded-xl p-4 mb-6">';
+                    if (data.errors) {
+                        Object.values(data.errors).forEach(errors => {
+                            errors.forEach(error => {
+                                errorHtml += `<p class="text-red-500 text-sm">${error}</p>`;
+                            });
+                        });
+                    } else if (data.message) {
+                        errorHtml += `<p class="text-red-500 text-sm">${data.message}</p>`;
+                    }
+                    errorHtml += '</div>';
+                    errorContainer.innerHTML = errorHtml;
+                }
+            } catch (error) {
+                errorContainer.innerHTML = `<div class="bg-red-500/10 border border-red-500 rounded-xl p-4 mb-6">
+                    <p class="text-red-500 text-sm">Network error. Please try again.</p>
+                </div>`;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Register';
+            }
+        });
+    </script>
 </body>
 
 </html>
